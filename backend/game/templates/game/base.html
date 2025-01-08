@@ -1,59 +1,60 @@
-{%extends "game/game_base.html"%}
+{% extends "game/game_base.html" %}
 {% block content %}
 <main role="main" class="container">
-	<div class="row">
-		<div class="col-md-8">
-			{% if recent_games_list %}
-				<ul>
-					<div id="messages">
-						<h2>Recent Games</h2>
-						{% for game in recent_games_list %}
-							{% if game.pending == False %}
-								<a href="{% url 'game:game_details' game.id %}" class="ChatButtonBackground">
-									{{ game.player1 }} vs {{ game.player2 }} ({{ game.score1 }}-{{ game.score2 }})
-								</a>
-							{% endif %}
-						{% endfor %}
-					</div>
-					<div id="messages">
-						<h2>Pending Games</h2>
-						{% for game in recent_games_list %}
-							{% if game.pending == True %}
-								{% if request.user.username == game.player2.profile.user.username or request.user.username == game.player1.profile.user.username %}
-									<form method="POST">
-										{% csrf_token %}
-										<button class="ChatButtonBackground" type="submit" name="player2_enter_game" value="{{ game.id }}">
-											{{ game.player1.profile.user }} vs {{ game.player2.profile.user }} ({{ game.score1 }}-{{ game.score2 }})
-										</button>
-									</form>
+    <div class="row">
+        <div class="col-md-8">
+            {% if recent_games_list %}
+                <ul>
+                    <div id="messages">
+                        <h2>Recent Games</h2>
+                        {% for game in recent_games_list %}
+                            {% if game.pending == False %}
+                                <a href="{% url 'game:game_details' game.id %}" class="ChatButtonBackground">
+                                    {{ game.player1 }} vs {{ game.player2 }} ({{ game.score1 }}-{{ game.score2 }})
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div id="messages">
+                        <h2>Pending Games</h2>
+                        {% for game in recent_games_list %}
+                            {% if game.pending == True %}
+                                {% if request.user.username == game.player2.profile.user.username or request.user.username == game.player1.profile.user.username %}
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <button class="ChatButtonBackground" type="submit" name="player2_enter_game" value="{{ game.id }}">
+                                            {{ game.player1.profile.user }} vs {{ game.player2.profile.user }} ({{ game.score1 }}-{{ game.score2 }})
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </ul>
+            {% else %}
+                <p>No games have been played yet.</p>
+            {% endif %}
+        </div>
 
-								{% endif %}
-							{% endif %}
-						{% endfor %}
-					</div>
-				</ul>
-			{% else %}
-				<p>No games have been played yet.</p>
-			{% endif %}
-		</div>
-		<div class="content-section">
-			<h3>Play new Game</h3>
-			<p class='text-muted'> Create New GroupChat:
-			<ul class="list-group">
-				<li class="list-group-item list-group-item-light">Enter opponent Username</li>
-			</ul>
-			<div> </div>
-			<form id="create-game-form" method="POST">
-				{% csrf_token %}
-				<div id="username" data-username="{{ request.user.username }}"></div>
-				<input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Enter opponent's Username" />
-				<button class="add_user" type="submit">Play Game +</button>
-			</form>
-			{% if error_message %}
-				<p class="alert alert-danger"> {{ error_message }} </p>
-			{% endif %}
-			</p>
-		</div>
-	</div>
+        <!-- Nueva sección para crear un torneo -->
+        <div class="content-section mt-4">
+            <h3>Create a New Tournament</h3>
+            <form method="POST" action="{% url 'game:create_tournament' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="tournament_name">Tournament Name</label>
+                    <input type="text" class="form-control" id="tournament_name" name="tournament_name" placeholder="Enter tournament name" required>
+                </div>
+                <div class="form-group">
+                    <label for="number_of_players">Number of Players</label>
+                    <input type="number" class="form-control" id="number_of_players" name="number_of_players" placeholder="Enter number of players" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Tournament</button>
+            </form>
+            {% if error_message %}
+                <p class="alert alert-danger">{{ error_message }}</p>
+            {% endif %}
+        </div>
+    </div>
 </main>
 {% endblock content %}

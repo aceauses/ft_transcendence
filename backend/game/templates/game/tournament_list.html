@@ -1,0 +1,12 @@
+{% extends "game/game_base.html" %}
+
+{% block content %}
+<main role="main" class="container">
+    <h1>Tournaments</h1>
+    <ul>
+        {% for tournament in tournaments %}
+            <li>{{ tournament.name }} - {{ tournament.number_of_players }} players</li>
+        {% endfor %}
+    </ul>
+</main>
+{% endblock content %}
