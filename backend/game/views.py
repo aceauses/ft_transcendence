@@ -140,7 +140,25 @@ def tournament_details(request, tournament_id):
     tournament = Tournament.objects.get(id=tournament_id)
     players = tournament.players.all()
 
-    elimination_table = []
+	# if (alle Spieler Da sind)
+	# 	game = Game.objects.create(player1=user_profile, player2=opp_profile)
+	# 	game1 = Game.objects.create(player4=user_profile, player3=opp_profile)
+	# 	game.get(id)
+	# 	game1.get(id)
+	# 	game.save()
+	# 	game1.save()
+	
+
+	# Postreques
+	# if request.user.username == player1 || player2
+	# 	return redirect('game:new_game', game_id=game.get(id))
+	# if request.user.username == player3 || player4
+	# 	return redirect('game:new_game', game_id=game1.get(id))
+
+		
+
+
+    # elimination_table = []
     for i in range(0, len(players), 2):
         match = {
             "player1": players[i],
