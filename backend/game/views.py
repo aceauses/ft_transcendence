@@ -140,7 +140,17 @@ def tournament_details(request, tournament_id):
     tournament = Tournament.objects.get(id=tournament_id)
     players = tournament.players.all()
 
+    elimination_table = []
+    for i in range(0, len(players), 2):
+        match = {
+            "player1": players[i],
+            "player2": players[i + 1] if i + 1 < len(players) else None,
+            "winner": None,  # der gewinner
+        }
+        elimination_table.append(match)
+
     return render(request, "game/tournament_details.html", {
         "tournament": tournament,
         "players": players,
+        "elimination_table": elimination_table,
     })

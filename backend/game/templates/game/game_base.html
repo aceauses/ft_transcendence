@@ -12,6 +12,8 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'blog/chat.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'blog/game.css' %}">
 
+	{% block head %}{% endblock head %}
+
 	{% if title%}
 	<title>Game - {{title}}</title>
 	{% else %}

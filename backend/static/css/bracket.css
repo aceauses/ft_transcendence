@@ -1,0 +1,64 @@
+/* Contenedor principal del bracket */
+.bracket-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  /* Estilo para cada ronda */
+  .round {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Espacio entre partidos */
+    position: relative;
+  }
+  
+  /* Estilo para cada partido */
+  .match {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 120px;
+    position: relative; /* Necesario para posicionar las líneas */
+  }
+  
+  /* Jugador individual */
+  .player {
+    background: #fff;
+    border: 2px solid #333;
+    padding: 5px 10px;
+    text-align: center;
+    border-radius: 4px;
+    position: relative;
+  }
+  
+  /* Líneas de conexión */
+  .round-1 .match::after,
+  .round-2 .match::after {
+    content: "";
+    position: absolute;
+    width: 30px; /* Largo de la línea horizontal */
+    height: 2px; /* Grosor de la línea */
+    background: #333;
+    top: 50%; /* Centra la línea verticalmente en el contenedor */
+    right: -30px; /* Desplaza la línea hacia la derecha */
+  }
+  
+  .round-2 .match::after {
+    right: -40px; /* Ajusta la posición para la segunda ronda */
+  }
+  
+  /* Líneas verticales */
+  .round-1 .match::before,
+  .round-2 .match::before {
+    content: "";
+    position: absolute;
+    width: 2px; /* Grosor de la línea vertical */
+    height: calc(100% + 30px); /* Altura dinámica basada en el espacio entre partidos */
+    background: #333;
+    top: 50%; /* Centra la línea verticalmente */
+    left: 50%; /* Centra la línea horizontalmente */
+    transform: translate(-50%, -50%);
+  }

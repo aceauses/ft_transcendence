@@ -1,17 +1,45 @@
 {% extends "game/game_base.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/bracket.css' %}">
+{% endblock head %}
+
 {% block content %}
-<main role="main" class="container">
-    <h1>{{ tournament.name }}</h1>
-    <h2>Registered Players</h2>
-    <table>
-        <tr>
-            <th>Username</th>
-        </tr>
-        {% for player in players %}
-        <tr>
-            <td>{{ player.username }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</main>
+<div class="bracket-container">
+
+  <!-- Ronda 1: Cuartos de Final -->
+  <div class="round round-1">
+      {% for player in players|slice:":8" %}
+      <div class="match">
+        <div class="player">{{ players|index:forloop.counter0 }}</div>
+        <div class="player">{{ players|index:forloop.counter }}</div>
+      </div>
+      {% endfor %}
+  </div>
+
+  <!-- Ronda 2: Semifinales -->
+  <div class="round round-2">
+      <div class="match">
+        <div class="player">{{ round_1_winners.0.name }}</div>
+        <div class="player">{{ round_1_winners.1.name }}</div>
+      </div>
+      <div class="match">
+        <div class="player">{{ round_1_winners.2.name }}</div>
+        <div class="player">{{ round_1_winners.3.name }}</div>
+      </div>
+  </div>
+
+  <!-- Ronda 3: Final -->
+  <div class="round round-3">
+      <div class="match">
+        <div class="player">{{ round_2_winners.0.name }}</div>
+        <div class="player">{{ round_2_winners.1.name }}</div>
+      </div>
+      <div class="champion">
+        <strong>{{ final_winner.name }}</strong>
+      </div>
+  </div>
+
+</div>
 {% endblock content %}
