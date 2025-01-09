@@ -15,4 +15,8 @@ urlpatterns = [
 
 	path("new/<int:game_id>/", views.start_game, name="new_game"),
 	path("dashboard/", views.dashboard, name="dashboard"),
+	#tournaments
+	path('create_tournament/', views.create_tournament, name='create_tournament'),
+	path('tournaments/', views.tournament_list, name='tournament_list'),
+	path('join_tournament/<int:tournament_id>/', views.join_tournament, name='join_tournament'),
 ]

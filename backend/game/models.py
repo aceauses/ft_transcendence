@@ -12,6 +12,10 @@ from django.contrib import admin
 
 from users.models import Profile
 
+#for the tournament
+
+from django.contrib.auth.models import User
+
 # create game when starting a new game
 # update game when finishing a game/goals are scored
 class Game(models.Model):
@@ -106,3 +110,14 @@ class Dashboard(models.Model):
 	def get_instance(cls):
 		instance, created = cls.objects.get_or_create(pk=1)
 		return instance
+
+class Tournament(models.Model):
+    name = models.CharField(max_length=100)
+    number_of_players = models.PositiveIntegerField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    players = models.ManyToManyField(User, related_name='tournaments')
+    pending = models.BooleanField(default=True) 
+
+    def __str__(self):
+        return self.name

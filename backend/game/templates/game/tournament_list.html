@@ -5,8 +5,27 @@
     <h1>Tournaments</h1>
     <ul>
         {% for tournament in tournaments %}
-            <li>{{ tournament.name }} - {{ tournament.number_of_players }} players</li>
+            {% if tournament.pending == True %}
+                <form method="POST" action="{% url 'game:join_tournament' tournament.id %}">
+                    {% csrf_token %}
+                    <button class="ChatButtonBackground" type="submit">
+                        {{ tournament.name }} - {{ tournament.number_of_players }} players
+                    </button>
+                </form>
+            {% endif %}
         {% endfor %}
     </ul>
 </main>
+<!-- {% for tournament in pending_games_list %}
+    {% if tournament.pending == True %}
+        {% if request.user not in tournament.players.all and tournament.players.count < tournament.number_of_players %}
+            <form method="POST" action="{% url 'game:join_tournament' tournament.id %}">
+                {% csrf_token %}
+                <button class="ChatButtonBackground" type="submit">
+                    {{ tournament.name }} - {{ tournament.number_of_players }} players
+                </button>
+            </form>
+        {% endif %}
+    {% endif %}
+{% endfor %} -->
 {% endblock content %}
