@@ -66,24 +66,21 @@
             <!-- Pending Tournaments -->
             <div class="border p-3 mb-3">
                 <h2>Pending Tournaments</h2>
-                {% if recent_tournaments_list %}
+              
                     <ul>
-                        {% for tournament in recent_tournaments_list %}
+                        {% for tournament in tournaments %}
+                        <h2>hello</h2>
                             {% if tournament.pending == True %}
-                                {% if request.user == tournament.created_by %}
-                                    <form method="POST">
-                                        {% csrf_token %}
-                                        <button class="ChatButtonBackground" type="submit" name="enter_tournament" value="{{ tournament.id }}">
-                                            {{ tournament.name }} - {{ tournament.number_of_players }} players
-                                        </button>
-                                    </form>
-                                {% endif %}
+                                <form method="POST" action="{% url 'game:join_tournament' tournament.id %}">
+                                    {% csrf_token %}
+                                    <button class="ChatButtonBackground" type="submit">
+                                        {{ tournament.name }} - {{ tournament.number_of_players }} players
+                                    </button>
+                                </form>
                             {% endif %}
                         {% endfor %}
                     </ul>
-                {% else %}
-                    <p>No pending tournaments.</p>
-                {% endif %}
+           
             </div>
         </div>
 

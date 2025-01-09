@@ -1,0 +1,17 @@
+{% extends "game/game_base.html" %}
+{% block content %}
+<main role="main" class="container">
+    <h1>{{ tournament.name }}</h1>
+    <h2>Registered Players</h2>
+    <table>
+        <tr>
+            <th>Username</th>
+        </tr>
+        {% for player in players %}
+        <tr>
+            <td>{{ player.username }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</main>
+{% endblock content %}

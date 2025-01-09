@@ -1,0 +1,12 @@
+{% extends "game/game_base.html" %}
+{% block content %}
+<main role="main" class="container">
+    <h1>Tournament</h1>
+    {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+    {% endif %}
+    <!--da fuer mehr details -->
+</main>
+{% endblock content %}

@@ -102,33 +102,45 @@ def create_tournament(request):
 
 def tournament_list(request):
 	tournaments = Tournament.objects.all()
-	return render(request, "game/tournament_list.html", {"tournaments": tournaments})
+	any_pending = any(tournament.pending for tournament in tournaments)
+	return render(request, "game/tournament_list.html", {"tournaments": tournaments, "any_pending": any_pending})
 
 def game_view(request):
-    recent_games_list = Game.objects.filter(pending=False).order_by('-date')[:10]
-    pending_games_list = Game.objects.filter(pending=True)
-    recent_tournaments_list = Tournament.objects.filter(pending=False).order_by('-date')[:10]
-    pending_tournaments_list = Tournament.objects.filter(pending=True)
-    print("hello")  # Imprime la lista de torneos recientes después de recuperarla
+	# recent_games_list = Game.objects.filter(pending=False).order_by('-date')[:10]
+	# pending_games_list = Game.objects.filter(pending=True)
+	recent_tournaments_list = Tournament.objects.filter(pending=False).order_by('-date')[:10]
+	pending_tournaments_list = Tournament.objects.filter(pending=True)
+	tournaments = Tournament.objects.all()
+	print("hello")  # Imprime la lista de torneos recientes después de recuperarla
 
-    return render(request, "game/game_page.html", {
-        "recent_games_list": recent_games_list,
-        "pending_games_list": pending_games_list,
-        "recent_tournaments_list": recent_tournaments_list,
-        "pending_tournaments_list": pending_tournaments_list,
-    })
+	return render(request, "game/base.html", {
+		"recent_games_list": recent_games_list,
+		"pending_games_list": pending_games_list,
+		"recent_tournaments_list": recent_tournaments_list,
+		"pending_tournaments_list": pending_tournaments_list,
+		"tournaments": tournaments, 
+	})
 
 
 def join_tournament(request, tournament_id):
-	if request.method == "POST":
-		tournament = Tournament.objects.get(id=tournament_id)
-		if tournament.players.count() < tournament.number_of_players:
-			tournament.players.add(request.user)
-			tournament.save()
-			# Redirigir a la página principal o mostrar un mensaje de éxito
-			return redirect("game:tournament_list")  # Cambia esto según tu flujo
-		else:
-			return render(request, "game/tournament.html", {
-				"error_message": "The tournament is full.",
-			})
-	return render(request, "game/tournament.html")
+    if request.method == "POST":
+        tournament = Tournament.objects.get(id=tournament_id)
+        if tournament.players.count() < tournament.number_of_players:
+            tournament.players.add(request.user)
+            tournament.save()
+            # Redirect to the tournament details page
+            return redirect("game:tournament_details", tournament_id=tournament_id)
+        else:
+            return render(request, "game/tournament.html", {
+                "error_message": "The tournament is full.",
+            })
+    return render(request, "game/tournament.html")
+
+def tournament_details(request, tournament_id):
+    tournament = Tournament.objects.get(id=tournament_id)
+    players = tournament.players.all()
+
+    return render(request, "game/tournament_details.html", {
+        "tournament": tournament,
+        "players": players,
+    })
