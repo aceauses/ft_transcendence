@@ -1,26 +1,24 @@
 {% extends "game/game_base.html" %}
 {% load static %}
 
-<!-- {% block head %}
+{% block head %}
     <link rel="stylesheet" href="{% static 'css/bracket.css' %}">
-{% endblock head %} -->
+{% endblock head %}
 
 {% block content %}
 <div class="bracket-container">
 
   <!-- Ronda 1: Cuartos de Final -->
-  <div class="round round-1">
-    {% for player in players %}
-      <div class="match">
-          <div class="player">{{ player }}</div>
-          {% for player in players %}
-          {% if player %}
-              <div class="player">{{ player }}</div>
-          {% endif %}
-      </div>
-    {% endfor %}
+<div class="round round-1">
+  {% for player1, player2 in player_pairs %}
+  <div class="match">
+      <div class="player">{{ player1 }}</div>
+      {% if player2 %}
+          <div class="player">{{ player2 }}</div>
+      {% endif %}
   </div>
-
+  {% endfor %}
+</div>
   <!-- Ronda 2: Semifinales -->
   <div class="round round-2">
       <div class="match">

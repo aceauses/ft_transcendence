@@ -137,39 +137,16 @@ def join_tournament(request, tournament_id):
 	return render(request, "game/tournament.html")
 
 def tournament_details(request, tournament_id):
-	tournament = Tournament.objects.get(id=tournament_id)
-	players = tournament.players.all()
+    tournament = Tournament.objects.get(id=tournament_id)
+    players = list(tournament.players.all())  # Obtén la lista de jugadores
 
-	# if (alle Spieler Da sind)
-	# 	game = Game.objects.create(player1=user_profile, player2=opp_profile)
-	# 	game1 = Game.objects.create(player4=user_profile, player3=opp_profile)
-	# 	game.get(id)
-	# 	game1.get(id)
-	# 	game.save()
-	# 	game1.save()
-	
+    # Organiza los jugadores en pares
+    player_pairs = []
+    for i in range(0, len(players), 2):
+        pair = (players[i], players[i + 1] if i + 1 < len(players) else None)
+        player_pairs.append(pair)
 
-	# Postreques
-	# if request.user.username == player1 || player2
-	# 	return redirect('game:new_game', game_id=game.get(id))
-	# if request.user.username == player3 || player4
-	# 	return redirect('game:new_game', game_id=game1.get(id))
-
-		
-
-
-	elimination_table = []
-	for i in range(0, len(players), 2):
-		match = {
-			"player1": players[i],
-			"player2": players[i + 1] if i + 1 < len(players) else None,
-			"winner": None,  # der gewinner
-		}
-		elimination_table.append(match)
-	print(players)
-	sys.stdout.flush()
-	return render(request, "game/tournament_details.html", {
-		"tournament": tournament,
-		"players": players,
-		"elimination_table": elimination_table,
-	})
+    return render(request, "game/tournament_details.html", {
+        "tournament": tournament,
+        "player_pairs": player_pairs,  # Pasa los pares al contexto
+    })
