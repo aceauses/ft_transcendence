@@ -28,6 +28,8 @@ def recent_games(request):
 						user_profile = Profile.objects.get(user=this_user)
 						opp_profile = Profile.objects.get(user=opp)
 						game = Game.objects.create(player1=user_profile, player2=opp_profile)
+						print("HelloWorld")
+						sys.stdout.flush()
 						game.save()
 						return redirect('game:new_game', game_id=game.id)
 					else:

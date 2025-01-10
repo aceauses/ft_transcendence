@@ -12,9 +12,14 @@
 <div class="round round-1">
   {% for player1, player2 in player_pairs %}
   <div class="match">
-      <div class="player">{{ player1 }}</div>
+      <div class="player">{{ player1 }}
+        <button id="pair_one">go</button>
+      </div>
       {% if player2 %}
-          <div class="player">{{ player2 }}</div>
+      <div class="player">{{ player2 }}
+        <!-- <button>go</button> -->
+          <button id="pair_two">go</button>
+          </div>
       {% endif %}
   </div>
   {% endfor %}
