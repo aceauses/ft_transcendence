@@ -123,22 +123,22 @@ def game_view(request):
 
 
 def join_tournament(request, tournament_id):
-    if request.method == "POST":
-        tournament = Tournament.objects.get(id=tournament_id)
-        if tournament.players.count() < tournament.number_of_players:
-            tournament.players.add(request.user)
-            tournament.save()
-            # Redirect to the tournament details page
-            return redirect("game:tournament_details", tournament_id=tournament_id)
-        else:
-            return render(request, "game/tournament.html", {
-                "error_message": "The tournament is full.",
-            })
-    return render(request, "game/tournament.html")
+	if request.method == "POST":
+		tournament = Tournament.objects.get(id=tournament_id)
+		if tournament.players.count() < tournament.number_of_players:
+			tournament.players.add(request.user)
+			tournament.save()
+			# Redirect to the tournament details page
+			return redirect("game:tournament_details", tournament_id=tournament_id)
+		else:
+			return render(request, "game/tournament.html", {
+				"error_message": "The tournament is full.",
+			})
+	return render(request, "game/tournament.html")
 
 def tournament_details(request, tournament_id):
-    tournament = Tournament.objects.get(id=tournament_id)
-    players = tournament.players.all()
+	tournament = Tournament.objects.get(id=tournament_id)
+	players = tournament.players.all()
 
 	# if (alle Spieler Da sind)
 	# 	game = Game.objects.create(player1=user_profile, player2=opp_profile)
@@ -158,17 +158,18 @@ def tournament_details(request, tournament_id):
 		
 
 
-    elimination_table = []
-    for i in range(0, len(players), 2):
-        match = {
-            "player1": players[i],
-            "player2": players[i + 1] if i + 1 < len(players) else None,
-            "winner": None,  # der gewinner
-        }
-        elimination_table.append(match)
-
-    return render(request, "game/tournament_details.html", {
-        "tournament": tournament,
-        "players": players,
-        "elimination_table": elimination_table,
-    })
+	elimination_table = []
+	for i in range(0, len(players), 2):
+		match = {
+			"player1": players[i],
+			"player2": players[i + 1] if i + 1 < len(players) else None,
+			"winner": None,  # der gewinner
+		}
+		elimination_table.append(match)
+	print(players)
+	sys.stdout.flush()
+	return render(request, "game/tournament_details.html", {
+		"tournament": tournament,
+		"players": players,
+		"elimination_table": elimination_table,
+	})
