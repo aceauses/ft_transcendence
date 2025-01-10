@@ -118,7 +118,7 @@ class Tournament(models.Model):
     name = models.CharField(max_length=100)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tournaments_created')
     players = models.ManyToManyField(User, related_name='tournaments_participated')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tournaments_user')
+    # user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tournaments_user')
     number_of_players = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     pending = models.BooleanField(default=True) 

@@ -158,7 +158,7 @@ def tournament_details(request, tournament_id):
 		
 
 
-    # elimination_table = []
+    elimination_table = []
     for i in range(0, len(players), 2):
         match = {
             "player1": players[i],
