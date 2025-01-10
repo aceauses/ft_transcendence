@@ -90,8 +90,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 					key = "KeyUpArrowDown"
 			self.game.move_paddle("player2", key)
 
- 
-
 
 	async def readyButton(self, event):
 		use = event['use']
@@ -107,27 +105,27 @@ class GameConsumer(AsyncWebsocketConsumer):
 		user1 = await sync_to_async(lambda: game.player1.profile.user.username)()
 		user2 = await sync_to_async(lambda: game.player2.profile.user.username)()
 
-		# if not (game.player1_ready and game.player2_ready):
-		# 	if user1 == user:
-		# 		game.player1_ready = True
-		# 	if user2 == user:
-		# 		game.player2_ready = True
-		# 	# create new task (calls start_game function)
-		# 	if game.player1_ready and game.player2_ready:
-		# 		asyncio.create_task(self.start_game_loop())
-		# 	# Save the game changes
-		# 	await sync_to_async(game.save)()
-		
-		
+		if not (game.player1_ready and game.player2_ready):
+			if user1 == user:
+				game.player1_ready = True
+			if user2 == user:
+				game.player2_ready = True
+			# create new task (calls start_game function)
+			if game.player1_ready and game.player2_ready:
+				asyncio.create_task(self.start_game_loop())
+			game.pending = False
+			# Save the game changes
+			await sync_to_async(game.save)()
+
 		# For testing to not start games
-		if user1 == user:
-			game.player1_ready = True
-		if user2 == user:
-			game.player2_ready = True
-		if game.player1_ready and game.player2_ready:
-			asyncio.create_task(self.start_game_loop())
-		game.pending = False
-		await sync_to_async(game.save)()
+		# if user1 == user:
+		# 	game.player1_ready = True
+		# if user2 == user:
+		# 	game.player2_ready = True
+		# if game.player1_ready and game.player2_ready:
+		# 	asyncio.create_task(self.start_game_loop())
+		# game.pending = False
+		# await sync_to_async(game.save)()
 
 
 	async def start_game_loop(self):
@@ -138,9 +136,18 @@ class GameConsumer(AsyncWebsocketConsumer):
 			if winner['player1'] or winner['player2']:
 				game = await sync_to_async(Game.objects.get)(id=self.game_id)
 				game.played_at = timezone.now()
+				player1 = await sync_to_async(lambda: game.player1)()
+				player2 = await sync_to_async(lambda: game.player2)()
+				if (winner['player1']):
+					player1.matches_won += 1
+					player2.matches_lost += 1
+				if (winner['player2']):
+					player2.matches_won += 1
+					player1.matches_lost += 1
+				await sync_to_async(player1.save)()
+				await sync_to_async(player2.save)()
 				await sync_to_async(game.save)()
-			###
-				
+
 			await self.channel_layer.group_send(
 				self.room_group_name,
 				{
