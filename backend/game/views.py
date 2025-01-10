@@ -44,7 +44,8 @@ def recent_games(request):
 			return redirect('game:new_game', game_id=game_id)
 
 	last_games = Game.objects.order_by("-played_at")[:10]
-	return render(request, "game/base.html", {"recent_games_list": last_games })
+	last_tournements = Tournament.objects.order_by("-created_at")[:10]
+	return render(request, "game/base.html", {"recent_games_list": last_games, "recent_tournement_list": last_tournements })
 
 
 def start_game(request, game_id):
