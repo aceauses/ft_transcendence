@@ -99,10 +99,10 @@
 				<ul class="list-group">
 					<li class="list-group-item list-group-item-light">Enter opponent Username</li>
 				</ul>
-				<form id="create-game-form" method="POST">
+				<form class="create-game-form" method="POST">
 					{% csrf_token %}
 					<div id="username" data-username="{{ request.user.username }}"></div>
-					<input class="messageInput" id="opp_name_id" type="text" name="opp_name" placeholder="Enter opponent's Username" />
+					<input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Enter opponent's Username" />
 					<button class="add_user btn btn-primary mt-2" type="submit">Play Game +</button>
 				</form>
 				{% if error_message %}

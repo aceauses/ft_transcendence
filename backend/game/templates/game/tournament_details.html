@@ -12,14 +12,21 @@
 <div class="round round-1">
   {% for player1, player2 in player_pairs %}
   <div class="match">
-      <div class="player">{{ player1 }}
-        <button id="pair_one">go</button>
-      </div>
+      <div class="player">{{ player1 }}</div>
+      <form class="create-game-form" method="POST">
+        {% csrf_token %}
+        <div id="username" data-username="{{ request.user.username }}"></div>
+        <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Enter opponent's Username" />
+        <button class="add_user btn btn-primary mt-2" type="submit">Play Game +</button>
+      </form>
       {% if player2 %}
-      <div class="player">{{ player2 }}
-        <!-- <button>go</button> -->
-          <button id="pair_two">go</button>
-          </div>
+          <div class="player">{{ player2 }}</div>
+          <form class="create-game-form" method="POST">
+            {% csrf_token %}
+            <div id="username" data-username="{{ request.user.username }}"></div>
+            <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Enter opponent's Username" />
+            <button class="add_user btn btn-primary mt-2" type="submit">Play Game +</button>
+          </form>
       {% endif %}
   </div>
   {% endfor %}
