@@ -9,28 +9,29 @@
 <div class="bracket-container">
 
   <!-- Ronda 1: Cuartos de Final -->
-<div class="round round-1">
-  {% for player1, player2 in player_pairs %}
-  <div class="match">
-      <div class="player">{{ player1 }}</div>
-      <form class="create-game-form" method="POST">
-        {% csrf_token %}
-        <div id="username" data-username="{{ request.user.username }}"></div>
-        <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Enter opponent's Username" />
-        <button class="add_user btn btn-primary mt-2" type="submit">Play Game +</button>
-      </form>
-      {% if player2 %}
-          <div class="player">{{ player2 }}</div>
-          <form class="create-game-form" method="POST">
-            {% csrf_token %}
-            <div id="username" data-username="{{ request.user.username }}"></div>
-            <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Enter opponent's Username" />
-            <button class="add_user btn btn-primary mt-2" type="submit">Play Game +</button>
-          </form>
-      {% endif %}
-  </div>
+  <div class="round round-1">
+    {% for player1, player2 in player_pairs %}
+    <div class="match">
+        <div class="player">{{ player1 }}</div>
+        <form class="create-game-form" method="POST">
+          {% csrf_token %}
+          <div id="username" data-username="{{ request.user.username }}"></div>
+          <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Jugar contra {{ player2 }}" />
+          <button class="add_user btn btn-primary mt-2" type="submit">Iniciar Juego +</button>
+        </form>
+        {% if player2 %}
+            <div class="player">{{ player2 }}</div>
+            <form class="create-game-form" method="POST">
+              {% csrf_token %}
+              <div id="username" data-username="{{ request.user.username }}"></div>
+              <!-- <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Jugar contra {{ player1 }}" />
+              <button class="add_user btn btn-primary mt-2" type="submit">Iniciar Juego +</button> -->
+              <a class="add_user btn btn-primary mt-2" href="http://localhost:8000/game/new/48/"></a>
+            </form>
+        {% endif %}
+    </div>
   {% endfor %}
-</div>
+  </div>
   <!-- Ronda 2: Semifinales -->
   <div class="round round-2">
       <div class="match">
