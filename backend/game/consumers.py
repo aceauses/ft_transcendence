@@ -144,6 +144,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 				if (winner['player2']):
 					player2.matches_won += 1
 					player1.matches_lost += 1
+				player1.tournement_game_id = 0
+				player2.tournement_game_id = 0
 				await sync_to_async(player1.save)()
 				await sync_to_async(player2.save)()
 				await sync_to_async(game.save)()

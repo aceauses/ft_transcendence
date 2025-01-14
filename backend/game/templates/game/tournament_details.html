@@ -20,14 +20,17 @@
           <button class="add_user btn btn-primary mt-2" type="submit">Iniciar Juego +</button>
         </form>
         {% if player2 %}
+        <p>{{player2.tournement_game_id}}</p>
             <div class="player">{{ player2 }}</div>
             <form class="create-game-form" method="POST">
               {% csrf_token %}
               <div id="username" data-username="{{ request.user.username }}"></div>
               <!-- <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Jugar contra {{ player1 }}" />
               <button class="add_user btn btn-primary mt-2" type="submit">Iniciar Juego +</button> -->
-              <a class="add_user btn btn-primary mt-2" href="http://localhost:8000/game/new/48/"></a>
-            </form>
+              {% if player2.tournement_game_id %}
+                <a class="add_user btn btn-primary mt-2" href="http://localhost:8000/game/new/{{ player2.tournement_game_id }}/">Iniciar Juego +</a>
+              {% endif %}
+              </form>
         {% endif %}
     </div>
   {% endfor %}

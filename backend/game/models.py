@@ -34,6 +34,9 @@ class Game(models.Model):
 	player1_control_settings = models.CharField(max_length=255, default='up down')
 	player2_control_settings = models.CharField(max_length=255, default='up down')
 	# obtain from each player the User object and display its username
+
+	
+
 	@admin.display(
 		boolean=True,
 		ordering="played_at",
@@ -47,6 +50,8 @@ class Player(models.Model):
 	created_at = models.DateTimeField("date created")
 	matches_won = models.IntegerField(default=0)
 	matches_lost = models.IntegerField(default=0)
+
+	tournement_game_id = models.IntegerField(default=0)
 	#added by mohamed
 	# user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True) 
 	#*****
@@ -90,7 +95,7 @@ class Dashboard(models.Model):
 class Tournament(models.Model):
 	name = models.CharField(max_length=100)
 	created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tournaments_created')
-	players = models.ManyToManyField(User, related_name='tournaments_participated')
+	players = models.ManyToManyField(Player, related_name='tournaments_participated')
 	# user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tournaments_user')
 	number_of_players = models.PositiveIntegerField()
 	created_at = models.DateTimeField(auto_now_add=True)

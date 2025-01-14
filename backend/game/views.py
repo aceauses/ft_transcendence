@@ -95,7 +95,10 @@ def create_tournament(request):
 			created_by=request.user,
 			pending=True
 		)
-		tournament.players.add(request.user)
+		player_created = Player.objects.get(id=request.user.id)
+		print(player_created)
+		sys.stdout.flush()
+		tournament.players.add(player_created)
 		tournament.save()
 
 		# Redirigir a la página principal o mostrar un mensaje de éxito
@@ -129,7 +132,8 @@ def join_tournament(request, tournament_id):
 	if request.method == "POST":
 		tournament = Tournament.objects.get(id=tournament_id)
 		if tournament.players.count() < tournament.number_of_players:
-			tournament.players.add(request.user)
+			test_player = Player.objects.get(id=request.user.id)
+			tournament.players.add(test_player)
 			tournament.save()
 			# Redirect to the tournament details page
 			return redirect("game:tournament_details", tournament_id=tournament_id)
@@ -153,3 +157,11 @@ def tournament_details(request, tournament_id):
         "tournament": tournament,
         "player_pairs": player_pairs,  # Pasa los pares al contexto
     })
+
+# game = Game.objects.get(id=game_id)
+# if (game.played_at != game.started_at)
+# 	game Done
+# 	if (game.score1 > game.score2)
+# 		player1 Winner
+# 	else
+# 		player2 = winner
