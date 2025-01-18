@@ -11,38 +11,28 @@
   <div class="round round-1">
     {% for player1, player2 in player_pairs %}
     <div class="match">
-        {% with matches_won_p1=player1.matches_won matches_won_p2=player2.matches_won %}
         <div class="player">{{ player1 }}</div>
-        <p>Matches Won: {{ player1.matches_won }}</p>
         <form class="create-game-form" method="POST">
           {% csrf_token %}
           <div id="username" data-username="{{ request.user.username }}"></div>
-          <input type="hidden" id="opp_name" name="opp_name" value="{{ player1.profile.user.username }}">
+          <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Jugar contra {{ player2 }}" />
           <button class="add_user btn btn-primary mt-2" type="submit">Iniciar Juego +</button>
         </form>
         {% if player2 %}
-        <p>{{ player2.tournement_game_id }}</p>
-        <div class="player">{{ player2 }}</div>
-        <p>Matches Won: {{ player2.matches_won }}</p>
-        <form class="create-game-form" method="POST">
-          {% csrf_token %}
-          <div id="username" data-username="{{ request.user.username }}"></div>
-          {% if player2.tournement_game_id %}
-            <a class="add_user btn btn-primary mt-2" href="http://localhost:8000/game/new/{{ player2.tournement_game_id }}/">Iniciar Juego +</a>
-          {% endif %}
-        </form>
+        <p>{{player2.tournement_game_id}}</p>
+            <div class="player">{{ player2 }}</div>
+            <form class="create-game-form" method="POST">
+              {% csrf_token %}
+              <div id="username" data-username="{{ request.user.username }}"></div>
+              <!-- <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Jugar contra {{ player1 }}" />
+              <button class="add_user btn btn-primary mt-2" type="submit">Iniciar Juego +</button> -->
+              {% if player2.tournement_game_id %}
+                <a class="add_user btn btn-primary mt-2" href="http://localhost:8000/game/new/{{ player2.tournement_game_id }}/">Iniciar Juego +</a>
+              {% endif %}
+              </form>
         {% endif %}
-        
-        <!-- Check for winner after the game -->
-        {% if player1.matches_won > matches_won_p1 %}
-          <p>{{ player1 }} is the winner!</p>
-        {% elif player2.matches_won > matches_won_p2 %}
-          <p>{{ player2 }} is the winner!</p>
-        {% endif %}
-        
-        {% endwith %}
     </div>
-    {% endfor %}
+  {% endfor %}
   </div>
   
   <div class="round round-3">
