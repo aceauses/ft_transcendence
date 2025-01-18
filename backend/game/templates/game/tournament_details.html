@@ -15,7 +15,8 @@
         <form class="create-game-form" method="POST">
           {% csrf_token %}
           <div id="username" data-username="{{ request.user.username }}"></div>
-          <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Jugar contra {{ player2 }}" />
+          <!-- <input class="messageInput" id="opp_name" type="text" name="opp_name" placeholder="Jugar contra {{ player2 }}" /> -->
+          <input type="hidden" id="opp_name" type="text" name="opp_name" value="{{ player2.profile.user.username }}" />
           <button class="add_user btn btn-primary mt-2" type="submit">Iniciar Juego +</button>
         </form>
         {% if player2 %}
