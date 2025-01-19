@@ -2,41 +2,52 @@
 {% load static %}
 
 {% block head %}
+  <style>
+    .disabled-link {
+      pointer-events: none; /* Evita que se pueda hacer clic */
+      opacity: 0.5;         /* Aspecto visual de elemento deshabilitado */
+    }
+  </style>
     <link rel="stylesheet" href="{% static 'css/bracket.css' %}">
 {% endblock head %}
 
 {% block content %}
-<div class="bracket-container">
+<div class="bracket-container"> 
   <!-- Ronda 1: semifinals -->
-  <div class="round round-1">
+<div class="round round-1">
     <div class="match">
-      {% with player1=player_pairs.0.0 player2=player_pairs.0.1 player3=player_pairs.1.0 player4=player_pairs.1.1 %}
-      {% if player1 %}
-        <p>Player 1: {{ player1 }}</p>
-        <div class="player">{{ player1 }}
+      {% if players.0 %}
+        <p>Player 1: {{ players.0 }}</p>
+        <div class="player">{{ players.0 }}
         <form class="create-game-form" method="POST">
           {% csrf_token %}
           <div id="username" data-username="{{ request.user.username }}"></div>
-          <input type="hidden" id="opp_name" type="text" name="opp_name" value="{{ player2.profile.user.username }}" />
-          <button class="add_user btn btn-primary mt-2" type="submit">Iniciar Juego +</button>
+          <input type="hidden" id="opp_name" type="text" name="opp_name" value="{{ players.1.profile.user.username }}" />
+          <button class="add_user btn btn-primary mt-2
+          {% if request.user.username != players.0.profile.user.username %}
+            disabled-link
+          {% endif %}" type="submit" name="player0_button_clicked">Iniciar Juego +</button>
         </form>
       </div>
-        {% if player2 %}
-          <p>Player 2: {{ player2 }}</p>
-          <p>{{player2.tournement_game_id}}</p>
-          <div class="player">{{ player2 }}
-          <form class="create-game-form" method="POST">
-            {% csrf_token %}
-            <div id="username" data-username="{{ request.user.username }}"></div>
-            {% if player2.tournement_game_id %}
-            <p>{{player2.tournement_game_id}}</p>
-              <a class="add_user btn btn-primary mt-2" href="http://localhost:8000/game/new/{{ player2.tournement_game_id }}/">Iniciar Juego +</a>
-            {% endif %}
-          </form>
-        </div>
-        {% endif %}
-        {% endif %}
-        {% if player3 %}
+      {% endif %}
+      {% if players.1 %}
+      <p>Player 2: {{ players.1 }}</p>
+      <p>{{players.1.tournement_game_id}}</p>
+      <div class="player">{{ players.1 }}
+        <form class="create-game-form" method="POST">
+          {% csrf_token %}
+          <div id="username" data-username="{{ request.user.username }}"></div>
+          {% if players.1.tournement_game_id %}
+          <p>{{players.1.tournement_game_id}}</p>
+          <a class="add_user btn btn-primary mt-2
+          {% if request.user.username != players.1.profile.user.username %}
+            disabled-link
+          {% endif %}" href="http://localhost:8000/game/new/{{ players.1.tournement_game_id }}/">Iniciar Juego +</a>
+          {% endif %}
+        </form>
+      </div>
+      {% endif %}
+        <!-- {% if player3 %}
         <p>Player 3: {{ player3 }}</p>
         <div class="player">{{ player3 }}
         <form class="create-game-form" method="POST">
@@ -59,8 +70,7 @@
           </form>
         </div>
         {% endif %}
-        {% endif %}
-      {% endwith %}
+        {% endif %} -->
     </div>
   </div>
 </div>
@@ -70,7 +80,7 @@
       <div class="player">{{ round_2_winners.0.name }}</div>
       <div class="player">{{ round_2_winners.1.name }}</div>
     </div>
-    <!-- Ronda 3: finals  -->
+    Ronda 3: finals 
     <div class="champion">
       <strong>{{ final_winner.name }}</strong>
     </div>

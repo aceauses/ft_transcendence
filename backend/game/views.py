@@ -144,19 +144,30 @@ def join_tournament(request, tournament_id):
 	return render(request, "game/tournament.html")
 
 def tournament_details(request, tournament_id):
-    tournament = Tournament.objects.get(id=tournament_id)
-    players = list(tournament.players.all())  # Obtén la lista de jugadores
+	tournament = Tournament.objects.get(id=tournament_id)
+	players = list(tournament.players.all())  # Obtén la lista de jugadores
 
-    # Organiza los jugadores en pares
-    player_pairs = []
-    for i in range(0, len(players), 2):
-        pair = (players[i], players[i + 1] if i + 1 < len(players) else None)
-        player_pairs.append(pair)
+	# Organiza los jugadores en pares
+	player_pairs = []
+	for i in range(0, len(players), 2):
+		pair = (players[i], players[i + 1] if i + 1 < len(players) else None)
+		player_pairs.append(pair)
+	
+	player0_ready = False
 
-    return render(request, "game/tournament_details.html", {
-        "tournament": tournament,
-        "player_pairs": player_pairs,  # Pasa los pares al contexto
-    })
+	if request.method == "POST":
+		if "player0_button_clicked" in request.POST:
+			# El usuario presionó el botón de Player 1
+			player0_ready = True
+			# Aquí puedes hacer algo adicional, como crear la partida, 
+			# asignar un ID, etc.
+
+
+	return render(request, "game/tournament_details.html", {
+		"tournament": tournament,
+		"players": players,
+		"player0_ready": player0_ready, # Pasa los pares al contexto
+	})
 
 # game = Game.objects.get(id=game_id)
 # if (game.played_at != game.started_at)
