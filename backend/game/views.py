@@ -144,46 +144,57 @@ def join_tournament(request, tournament_id):
 	return render(request, "game/tournament.html")
 
 def tournament_details(request, tournament_id):
-    tournament = Tournament.objects.get(id=tournament_id)
-    players = list(tournament.players.all())  # Obtén la lista de jugadores
-    winners = list()
+	tournament = Tournament.objects.get(id=tournament_id)
+	players = list(tournament.players.all())  # Obtén la lista de jugadores
+	winners = []
 
-    if len(players) == 4:
-        # Verificar si el torneo actual es diferente al de la sesión para este usuario
-        session_key = f"current_tournament_id_{request.user.id}"
-        if session_key not in request.session or request.session[session_key] != tournament_id:
-            # Si es un torneo nuevo para este usuario, reiniciar las variables de sesión con los valores de matches_won de cada jugador
-            request.session[f'wons1_{request.user.id}'] = players[0].matches_won
-            request.session[f'wons2_{request.user.id}'] = players[1].matches_won
-            request.session[f'wons3_{request.user.id}'] = players[2].matches_won
-            request.session[f'wons4_{request.user.id}'] = players[3].matches_won
-            
-        # Guardar el ID del torneo actual en la sesión para este usuario
-        request.session[session_key] = tournament_id
+	if len(players) == 4:
+		# Verificar si el torneo actual es diferente al de la sesión para este usuario
+		session_key = f"current_tournament_id_{request.user.id}"
+		if session_key not in request.session or request.session[session_key] != tournament_id:
+			# Si es un torneo nuevo para este usuario, reiniciar las variables de sesión con los valores de matches_won de cada jugador
+			request.session[f'wons1_{request.user.id}'] = players[0].matches_won
+			request.session[f'wons2_{request.user.id}'] = players[1].matches_won
+			request.session[f'wons3_{request.user.id}'] = players[2].matches_won
+			request.session[f'wons4_{request.user.id}'] = players[3].matches_won
+			
+		# Guardar el ID del torneo actual en la sesión para este usuario
+		request.session[session_key] = tournament_id
 
-        # Obtener los valores de wons de la sesión para este usuario
-        wons1 = request.session.get(f'wons1_{request.user.id}', players[0].matches_won)
-        wons2 = request.session.get(f'wons2_{request.user.id}', players[1].matches_won)
-        wons3 = request.session.get(f'wons3_{request.user.id}', players[2].matches_won)
-        wons4 = request.session.get(f'wons4_{request.user.id}', players[3].matches_won)
+		# Obtener los valores de wons de la sesión para este usuario
+		wons1 = request.session.get(f'wons1_{request.user.id}', players[0].matches_won)
+		wons2 = request.session.get(f'wons2_{request.user.id}', players[1].matches_won)
+		wons3 = request.session.get(f'wons3_{request.user.id}', players[2].matches_won)
+		wons4 = request.session.get(f'wons4_{request.user.id}', players[3].matches_won)
 
-        # Resto del código...
+	
+		
+		if wons1 < players[0].matches_won:
+			winners.append( players[0])
+		elif wons2 < players[1].matches_won:
+			winners.append(players[1])
+		if wons3 < players[2].matches_won:
+			winners.append( players[0])
+		elif wons4 < players[3].matches_won:
+			winners.append(players[1])
 
-        return render(request, "game/tournament_details.html", {
-            "tournament": tournament,
-            "players": players,
-            "wons1": wons1,
-            "wons2": wons2,
-            "wons3": wons3,
-            "wons4": wons4,
-            "winners": winners,
-        })
-    else:
-        return render(request, "game/tournament_details.html", {
-            "tournament": tournament,
-            "players": players,
-            "winners": winners,
-        })
+		# Resto del código...	
+
+		return render(request, "game/tournament_details.html", {
+			"tournament": tournament,
+			"players": players,
+			"wons1": wons1,
+			"wons2": wons2,
+			"wons3": wons3,
+			"wons4": wons4,
+			"winners": winners,
+		})
+	else:
+		return render(request, "game/tournament_details.html", {
+			"tournament": tournament,
+			"players": players,
+			"winners": winners,
+		})
 	# game = Game.objects.get(id=game_id)
 	# if (game.played_at != game.started_at)
 	# 	game Done
