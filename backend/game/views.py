@@ -147,28 +147,58 @@ def tournament_details(request, tournament_id):
 	tournament = Tournament.objects.get(id=tournament_id)
 	players = list(tournament.players.all())  # Obtén la lista de jugadores
 
-	# Organiza los jugadores en pares
+	wons1 = 0
+	wons2 = 0
+	wons3 = 0
+	wons4 = 0
+
+	# Jugador 1
+	if len(players) > 0:
+		if 'wons1' not in request.session:
+			# Guardamos SOLO el número de victorias, no el objeto
+			request.session['wons1'] = players[0].matches_won
+		wons1 = request.session['wons1']
+
+	# Jugador 2
+	if len(players) > 1:
+		if 'wons2' not in request.session:
+			# De nuevo, guardamos solo matches_won del jugador 2
+			request.session['wons2'] = players[1].matches_won
+		wons2 = request.session['wons2']
+
+	# Jugador 3
+	if len(players) > 2:
+		if 'wons3' not in request.session:
+			request.session['wons3'] = players[2].matches_won
+		wons3 = request.session['wons3']
+
+	# Jugador 4
+	if len(players) > 3:
+		if 'wons4' not in request.session:
+			request.session['wons4'] = players[3].matches_won
+		wons4 = request.session['wons4']
+
+	# Organiza los jugadores en pares (si lo necesitas)
 	player_pairs = []
 	for i in range(0, len(players), 2):
 		pair = (players[i], players[i + 1] if i + 1 < len(players) else None)
 		player_pairs.append(pair)
 	
 	player0_ready = False
-
 	if request.method == "POST":
 		if "player0_button_clicked" in request.POST:
-			# El usuario presionó el botón de Player 1
 			player0_ready = True
-			# Aquí puedes hacer algo adicional, como crear la partida, 
-			# asignar un ID, etc.
-
+			# Aquí cualquier lógica adicional
 
 	return render(request, "game/tournament_details.html", {
 		"tournament": tournament,
 		"players": players,
-		"player0_ready": player0_ready, # Pasa los pares al contexto
+		"player0_ready": player0_ready,
+		"wons1": wons1,
+		"wons2": wons2,
+		"wons3": wons3,
+		"wons4": wons4,
 	})
-
 # game = Game.objects.get(id=game_id)
 # if (game.played_at != game.started_at)
 # 	game Done
