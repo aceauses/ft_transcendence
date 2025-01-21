@@ -168,18 +168,30 @@ def tournament_details(request, tournament_id):
 		wons4 = request.session.get(f'wons4_{request.user.id}', players[3].matches_won)
 
 	
-		
-		if wons1 < players[0].matches_won:
-			winners.append( players[0])
-		elif wons2 < players[1].matches_won:
-			winners.append(players[1])
-		if wons3 < players[2].matches_won:
-			winners.append( players[0])
-		elif wons4 < players[3].matches_won:
-			winners.append(players[1])
+		if len(winners) < 2 :
+			if wons1 < players[0].matches_won and players[0] not in winners:
+				winners.append(players[0])
+			elif wons2 < players[1].matches_won and players[1] not in winners:
+				winners.append(players[1])
+
+			if wons3 < players[2].matches_won and players[2] not in winners:
+				winners.append(players[2])
+			elif wons4 < players[3].matches_won and players[3] not in winners:
+				winners.append(players[3])
+
+		if len(winners) == 2 :
+			if (wons1 + 1) < players[0].matches_won :
+				winners.append(players[0])
+			elif (wons2 + 1) < players[1].matches_won :
+				winners.append(players[1])
+			elif (wons3 + 1) < players[2].matches_won :
+				winners.append(players[2])
+			elif (wons4 + 1) < players[3].matches_won :
+				winners.append(players[3])
 
 		# Resto del código...	
-
+		# if  len(winners) == 3 :
+		# 	return redirect ("game:recent_games")
 		return render(request, "game/tournament_details.html", {
 			"tournament": tournament,
 			"players": players,
