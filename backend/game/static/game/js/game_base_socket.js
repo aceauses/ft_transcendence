@@ -19,7 +19,7 @@ export function game_base() {
 			const recentGames = games
 				.filter(game => !game.pending)
 				.map(game => `
-					<a href="/game/${game.game_id}" class="ChatButtonBackground">
+					<a href="/game/game-details/${game.game_id}" class="ChatButtonBackground" data-link>
 						${game.player1} vs ${game.player2} (${game.score1}-${game.score2})
 					</a>
 				`).join('');
@@ -46,6 +46,7 @@ export function game_base() {
 				</form>
 				<a href="/game/page2" data-link>page2</a>
 				<a href="/game/pong/5" data-link>Game page</a>
+				<a href="/game/game-details/1" data-link>Game page</a>
 			`;
 
 			document.getElementById("create-game-form").addEventListener("submit", function(event) {

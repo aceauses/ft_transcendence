@@ -13,18 +13,6 @@ from django.http import JsonResponse
 from django.middleware.csrf import get_token
 import sys
 
-# show recent games for now
-# @login_required
-# def recent_games(request):
-# 	csrf_token_view(request)
-# 	if request.method == "POST":
-# 		if 'player2_enter_game' in request.POST:
-# 			game_id = request.POST.get('player2_enter_game')
-# 			return redirect('game:new_game', game_id=game_id)
-
-# 	last_games = Game.objects.order_by("-played_at")[:10]
-# 	return render(request, "game/base.html", {"recent_games_list": last_games })
-
 def game(request):
 	return render(request, "game/index.html")
 
@@ -56,9 +44,6 @@ def game_data(request):
 		return JsonResponse({'error': 'No Games Found'}, status=404)
 
 def ingame(request):
-
-	print("\n\n HelloWorld \n\n")
-
 	game_id = request.GET.get('game_id')
 	if not game_id:
 		return JsonResponse({'error': 'Game ID is required'}, status=400)
@@ -83,11 +68,6 @@ def ingame(request):
 		return JsonResponse({'error': 'Game not found'}, status=404)
 
 
-
-# def start_game(request, game_id):
-# 	game = get_object_or_404(Game, id=game_id)
-# 	return render(request, "game/start_game.html", {"game": game, "game_id": game_id})
-
 # def game_details(request, game_id):
 # 	game = get_object_or_404(Game, pk=game_id)
 # 	return render(request, "game/game_details.html", {"game": game})
@@ -101,9 +81,3 @@ def ingame(request):
 
 # def dashboard(request):
 # 	return render(request, "game/dashboard.html", {"dashboard": Dashboard.get_instance()})
-
-# def csrf_token_view(request):
-# 	csrf_token = get_token(request)
-# 	print("Token:")
-# 	print(csrf_token)
-# 	sys.stdout.flush()
