@@ -1,8 +1,11 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import Game
+from users.models import Profile
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 import json
 from asgiref.sync import sync_to_async
+from django.db import DatabaseError
 from .pong import PongGame
 import asyncio
 from django.utils import timezone
@@ -156,3 +159,45 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'use': 'game_state',
 			'state': json.loads(state),
 		}))
+
+# New Socket connection for creating games
+class BasePageConsumer(AsyncWebsocketConsumer):
+	async def connect(self):
+		self.group_name = 'base_page_group'
+		
+		await self.channel_layer.group_add(
+			self.group_name,
+			self.channel_name
+		)
+		await self.accept()
+
+	async def disconnect(self, close_code):
+		await self.channel_layer.group_discard(
+			self.group_name,
+			self.channel_name
+		)
+
+	async def receive(self, text_data):
+		data = json.loads(text_data)
+		use = data['message']
+
+		if use == "create_game":
+			await self.send_game_created(data['player1'], data['player2'], data['game_id'])
+
+	async def send_game_created(self, player1, player2, game_id):
+		response = {
+			"message": "game_created",
+			"player1": player1,
+			"player2": player2,
+			"game_id": game_id
+		}
+
+		await self.channel_layer.group_send(
+			self.group_name,
+			{
+				'type': 'game_created',
+				'message': response
+			}
+		)
+	async def game_created(self, event):
+		await self.send(text_data=json.dumps(event['message']))

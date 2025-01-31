@@ -25,6 +25,7 @@ from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter , URLRouter
 from chat import routing as chat_routing
 from game import routing as game_routing
+# from spa_game import routing as spa_game_routing
 
 application = ProtocolTypeRouter(
     {

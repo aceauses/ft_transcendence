@@ -1,0 +1,19 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Game Creation</title>
+</head>
+<body>
+	{% include 'navbar.html' %}
+
+	<div class="container mt-5" id="pong-app-content"></div>
+	<script type="module" src="/static/spa_game/router.js"></script>
+	<script type="module" src="/static/spa_game/game_base_socket.js"></script>
+	<script type="module" src="/static/spa_game/pages.js"></script>
+	<script type="module" src="/static/spa_game/main.js"></script>
+</body>
+</html>
