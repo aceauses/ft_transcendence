@@ -4,6 +4,7 @@ from datetime import timezone
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from custom_user.models import Player
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -38,7 +39,8 @@ def create_room(request):
 			)
 		room, created = Room.objects.get_or_create(name=room_name)
 		room.update_activity()
-		participant, created = Participant.objects.get_or_create(user=request.user, room=room)
+		participant, created = Participant.objects.get_or_create(user=request.user, player=Player.objects.filter(user=request.user).first(),  room=room)
+		assert created and participant.player is not None and participant.player == Player.objects.filter(user=request.user).first()
 		if created:
 			room.leader = participant
 			room.settings = RoomSettings.objects.create(room=room)

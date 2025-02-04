@@ -1,19 +1,17 @@
+# for displaying games in admin panel
+from custom_user.models import Player
+from django.contrib import admin
 from django.db import models
 
 # Create your models here.
-
 from django.utils import timezone
-
-# for displaying games in admin panel
-
-from django.contrib import admin
 
 
 # create game when starting a new game
 # update game when finishing a game/goals are scored
 class Game(models.Model):
-	player1 = models.ForeignKey('Player', related_name='games_as_player1', on_delete=models.CASCADE)
-	player2 = models.ForeignKey('Player', related_name='games_as_player2', on_delete=models.CASCADE)
+	player1 = models.ForeignKey(Player, related_name='games_as_player1', on_delete=models.CASCADE)
+	player2 = models.ForeignKey(Player, related_name='games_as_player2', on_delete=models.CASCADE)
 	score1 = models.IntegerField(default=0)
 	score2 = models.IntegerField(default=0)
 	# calculate duration of game from start to finish
@@ -35,21 +33,3 @@ class Game(models.Model):
 	)
 	def __str__(self):
 		return f'{self.player1} vs {self.player2} ({self.score1}-{self.score2})'
-
-
-class Player(models.Model):
-	profile = models.OneToOneField(
-		'users.Profile', on_delete=models.CASCADE, related_name='profile_for_player'
-	)
-	matches_won = models.IntegerField(default=0)
-	matches_lost = models.IntegerField(default=0)
-
-	def __str__(self):
-		return self.profile.user.username
-
-	def win_to_loss_ratio(self):
-		if self.matches_lost == 0:
-			return self.matches_won
-		if self.matches_lost == 0:
-			return self.matches_won
-		return round(self.matches_won / self.matches_lost, 2)

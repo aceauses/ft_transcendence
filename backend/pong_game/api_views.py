@@ -1,13 +1,16 @@
 # Create your views here.
-from users.models import Profile
-from .models import Game
-from django.contrib.auth.models import User
+from custom_user.models import Player
+from django.contrib.auth import get_user_model
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 # For api
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
+
+from .models import Game
+
+User = get_user_model()
 
 
 # API for game creation
@@ -31,23 +34,17 @@ class CreateGameView(APIView):
 			)
 
 		try:
-			opponent = User.objects.get(username=opponent_username)
-		except User.DoesNotExist:
+			opponent = Player.objects.get(user__username=opponent_username)
+		except Player.DoesNotExist:
 			return Response({'error': 'Opponent does not exist.'}, status=status.HTTP_404_NOT_FOUND)
 
-		if user_username:
-			try:
-				user = User.objects.get(username=user_username)
-			except User.DoesNotExist:
-				return Response({'error': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
-		else:
-			user_profile = Profile.objects.get(user=request.user)
-
-		opponent_profile = Profile.objects.get(user=opponent)
-		user_profile = Profile.objects.get(user=user)
+		try:
+			player = Player.objects.get(user__username=user_username)
+		except Player.DoesNotExist:
+			return Response({'error': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
 
 		# Create the game
-		game = Game.objects.create(player1=user_profile.player, player2=opponent_profile.player)
+		game = Game.objects.create(player1=player, player2=opponent)
 		game.save()
 
 		return Response(
@@ -91,9 +88,9 @@ class ControlKeySetting(APIView):
 		username = request.data.get('username')
 
 		if username:
-			user = username
+			user = User.objects.filter(username=username)
 		else:
-			user = request.user.username
+			user = User.objects.filter(username=request.user.username)
 
 		control1 = request.data.get('control1')
 		control2 = request.data.get('control2')
@@ -109,9 +106,9 @@ class ControlKeySetting(APIView):
 		except Game.DoesNotExist:
 			return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-		if user == game.player1.profile.user.username:
+		if user == game.player1.user:
 			game.player1_control_settings = control1
-		elif user == game.player2.profile.user.username:
+		elif user == game.player2.user:
 			game.player2_control_settings = control2
 		else:
 			return Response(
