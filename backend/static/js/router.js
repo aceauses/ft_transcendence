@@ -4,6 +4,12 @@ import { clear_containers, home_view } from '/static/js/navbar.js';
 import { loadDashboard } from '/static/dashboard/js/dashboard.js';
 import { loadProfile } from '/static/dashboard/js/profile.js';
 
+import { game_base} from '/static/game/js/game_base_socket.js';
+import { page1, page2 } from '/static/game/js/pages.js';
+import { game } from '/static/game/js/game.js';
+import { gameDetails } from '/static/game/js/gameDetails.js';
+import { Tournement } from '/static/game/js/Tournement.js';
+
 class Router {
 	constructor() {
 		this.routes = {};
@@ -46,7 +52,10 @@ class Router {
 	handleDynamicRoute(path) {
 		const quizPathRegex = /^\/quiz\/([^\/]+)\/?$/;
 		const dashboardPathRegex = /^\/dashboard\/([^\/]+)\/?$/;
-		
+		const pongPathRegex = /^\/game\/pong\/([^\/]+)\/?$/;  // Neue Regex für '/game/pong/:game_id'
+		const pongDetailsPathRegex = /^\/game\/game-details\/([^\/]+)\/?$/;
+		const tournementPathRegex = /^\/game\/tournement\/([^\/]+)\/?$/;
+	
 		let match = path.match(quizPathRegex);
 		if (match) {
 			const roomName = match[1];
@@ -58,19 +67,37 @@ class Router {
 			}
 			return;
 		}
-
+	
 		match = path.match(dashboardPathRegex);
 		if (match) {
 			const username = match[1];
 			loadProfile(username);
 			return;
 		}
+		match = path.match(pongPathRegex);
+		if (match) {
+			const gameId = match[1];
+			game({ game_id: gameId });
+			return;
+		}
+
+		match = path.match(pongDetailsPathRegex);
+		if (match) {
+			const gameId = match[1];
+			gameDetails({ game_id: gameId });
+			return;
+		}
+
+		match = path.match(tournementPathRegex);
+		if (match) {
+			const tournementId = match[1];
+			Tournement({ tournement_id: tournementId });
+			return;
+		}
+	
 		this.showNotFound();
 	}
-
-	showNotFound() {
-		document.getElementById('error-content').innerHTML = '<h2>Page not found!</h2>';
-	}
+	
 
 	// ! This function is not used. If for some reason we want to use href WITHOUT an event listener (please don't), this
 	//! function can be modified to USE navigateTo instead of handleRouteChange and then href would work.
@@ -108,6 +135,12 @@ const router = new Router();
  * The main view of the quiz app
  */
 router.addRoute('/quiz/', loadRoomList);
+
+/**
+ * The main view of the quiz app
+ */
+router.addRoute('/game/', game_base);
+router.addRoute('/game/page2', page2);
 
 /**
  * The Homepage
