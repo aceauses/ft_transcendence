@@ -14,49 +14,24 @@ class GameConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
 		self.game_id = self.scope['url_route']['kwargs']['game_id']
 		self.room_group_name = f'game_{self.game_id}'
-
-		# Stelle sicher, dass ein zentrales Spiel verwendet wird
+		
 		if self.game_id not in games:
 			games[self.game_id] = PongGame("player1", "player2")
 		self.game = games[self.game_id]
-
-		# Gruppe hinzufügen
-		await self.channel_layer.group_add(
-			self.room_group_name,
-			self.channel_name
-		)
+		
+		await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 		await self.accept()
 
-
 	async def disconnect(self, close_code):
-		await self.channel_layer.group_discard(
-			self.room_group_name,
-			self.channel_name
-		)
+		await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 		self.game.running = False
 
 	async def receive(self, text_data):
-		text_data_json = json.loads(text_data)
-		use = text_data_json['use']
-
-		if use == 'ready_button':
-			user = text_data_json['user']
-			game_id = text_data_json['game_id']
-			await self.save_message(user, game_id)
-			await self.channel_layer.group_send(
-				self.room_group_name,
-				{
-					'type': 'readyButton',
-					'use': use,
-					'user': user,
-				}
-			)
-
-		if use == 'KeyboardEvent':
-			user = text_data_json['user']
-			game_id = text_data_json['game_id']
-			key = text_data_json['key']
-			await self.KeyboardInterrupt(user, game_id, key)
+		data = json.loads(text_data)
+		if data['use'] == 'ready_button':
+			await self.handle_ready_button(data)
+		elif data['use'] == 'KeyboardEvent':
+			await self.handle_keyboard_event(data)
 
 
 
@@ -149,6 +124,20 @@ class GameConsumer(AsyncWebsocketConsumer):
 				await sync_to_async(player1.save)()
 				await sync_to_async(player2.save)()
 				await sync_to_async(game.save)()
+				game = await sync_to_async(Game.objects.get)(id=self.game_id)
+				if game.tournament:
+					await self.channel_layer.group_send(
+						"tournament_group",
+						{
+							"type": "tournament_update",
+							"message": {
+								"action": "update_bracket",
+								"game_id": str(self.game_id),
+								"stage": game.tournament_stage  # Asegúrate de tener este campo
+							}
+						}
+					)
+				await sync_to_async(game.save)()
 
 			await self.channel_layer.group_send(
 				self.room_group_name,
@@ -166,4 +155,22 @@ class GameConsumer(AsyncWebsocketConsumer):
 		await self.send(text_data=json.dumps({
 			'use': 'game_state',
 			'state': json.loads(state),
+		}))
+
+class TournamentConsumer(AsyncWebsocketConsumer):
+	async def connect(self):
+		await self.channel_layer.group_add("tournament_group", self.channel_name)
+		await self.accept()
+
+	async def disconnect(self, close_code):
+		await self.channel_layer.group_discard("tournament_group", self.channel_name)
+
+	async def receive(self, text_data):
+		# No necesitamos recibir datos aquí, solo enviar actualizaciones
+		pass
+
+	async def tournament_update(self, event):
+		await self.send(text_data=json.dumps({
+			'type': 'bracket_update',
+			'message': 'refresh_bracket'
 		}))

@@ -2,206 +2,152 @@
 {% load static %}
 
 {% block head %}
+<link rel="stylesheet" href="{% static 'css/brackets.css' %}
 <style>
-  .disabled-link {
-    pointer-events: none;
-    /* Evita que se pueda hacer clic */
-    opacity: 0.5;
-    /* Aspecto visual de elemento deshabilitado */
-  }
+    button:disabled, a[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 </style>
-<link rel="stylesheet" href="{% static 'css/brackets.css' %}">
 {% endblock head %}
 
 {% block content %}
 {% if players|length == 4 %}
 <div class="bracket-container">
-  <!-- Ronda 1: semifinals -->
-  <div class="round-quarter-finals">
-    <div class="round round-1">
+    <div class="round-quarter-finals">
+        <div class="round round-1">
+            {% if players.0 %}
+            <div class="player1">{{ players.0 }}
+                <form class="create-game-form" method="POST"
+                      data-game-id="{{ players.0.tournement_game_id }}"
+                      data-username="{{ players.0.profile.user.username }}">
+                    {% csrf_token %}
+                    <button class="add_user btn btn-primary mt-2"
+                        {% if request.user.username != players.0.profile.user.username %}disabled{% endif %}
+                        type="button"
+                        onclick="initiateGame(this)">
+                        Iniciar Juego +
+                    </button>
+                </form>
+            </div>
+            {% if players.1 %}
+            <div class="player2">{{ players.1 }}
+                <form class="create-game-form"
+                      data-game-id="{{ players.1.tournement_game_id }}"
+                      data-username="{{ players.1.profile.user.username }}">
+                    {% csrf_token %}
+                    <button class="add_user btn btn-primary mt-2"
+                        {% if request.user.username != players.1.profile.user.username %}disabled{% endif %}
+                        type="button"
+                        onclick="initiateGame(this)">
+                        Iniciar Juego +
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
 
-      {% if players.0 %}
-      <!-- <p>Player 1: {{ players.0 }}</p> -->
-      <div class="player1">{{ players.0 }}
-        <!-- <form class="create-game-form" method="POST" onsubmit="return handleButtonClick();">
-              {% csrf_token %}
-              <div id="username" data-username="{{ request.user.username }}"></div>
-              <input type="hidden" id="opp_name" type="text" name="opp_name" value="{{ players.1.profile.user.username }}" />
-              <button id="startGameButton" class="add_user btn btn-primary mt-2
-              {% if request.user.username != players.0.profile.user.username %}
-                  disabled-link
-              {% endif %}" type="submit" name="player0_button_clicked">Iniciar Juego +</button>
-          </form> -->
-        <form class="create-game-form" method="POST">
-          {% csrf_token %}
-          <div id="username" data-username="{{ request.user.username }}"></div>
-          <input type="hidden" id="opp_name" type="text" name="opp_name"
-            value="{{ players.1.profile.user.username }}" />
-          <button class="add_user btn btn-primary mt-2
-            {% if request.user.username != players.0.profile.user.username %}
-              disabled-link
-            {% endif %}" type="submit" name="player0_button_clicked">Iniciar Juego +</button>
-        </form>
-      </div>
-      {% if players.1 %}
-      <!-- <p>Player 2: {{ players.1 }}</p>
-        <p>{{players.1.tournement_game_id}}</p> -->
-      <div class="player2">{{ players.1 }}
-        <!-- <form class="create-game-form" method="POST">
-            {% csrf_token %}
-            <div id="username" data-username="{{ request.user.username }}"></div>
-            <a class="add_user btn btn-primary mt-2
-            {% if request.user.username != players.1.profile.user.username or not player0_button_clicked %}
-            disabled-link
-            {% endif %}" href="http://localhost:8000/game/new/{{ players.1.tournement_game_id }}/">Iniciar Juego +</a>
-          </form> -->
-        <form class="create-game-form" method="POST">
-          {% csrf_token %}
-          <div id="username" data-username="{{ request.user.username }}"></div>
-          <a class="add_user btn btn-primary mt-2
-            {% if request.user.username != players.1.profile.user.username %}
-            disabled-link
-            {% endif %}" href="http://localhost:8000/game/new/{{ players.1.tournement_game_id }}/">Iniciar Juego +</a>
-        </form>
-      </div>
-      {% endif %}
-      {% endif %}
+        <div class="round round-2">
+            {% if players.2 %}
+            <div class="player3">{{ players.2 }}
+                <form class="create-game-form" method="POST"
+                      data-game-id="{{ players.2.tournement_game_id }}"
+                      data-username="{{ players.2.profile.user.username }}">
+                    {% csrf_token %}
+                    <button class="add_user btn btn-primary mt-2"
+                        {% if request.user.username != players.2.profile.user.username %}disabled{% endif %}
+                        type="button"
+                        onclick="initiateGame(this)">
+                        Iniciar Juego +
+                    </button>
+                </form>
+            </div>
+            {% if players.3 %}
+            <div class="player4">{{ players.3 }}
+                <form class="create-game-form"
+                      data-game-id="{{ players.3.tournement_game_id }}"
+                      data-username="{{ players.3.profile.user.username }}">
+                    {% csrf_token %}
+                    <button class="add_user btn btn-primary mt-2"
+                        {% if request.user.username != players.3.profile.user.username %}disabled{% endif %}
+                        type="button"
+                        onclick="initiateGame(this)">
+                        Iniciar Juego +
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
     </div>
 
-    <div class="round round-2">
-      <!-- Ronda 2: finals -->
-      {% if players.2 %}
-      <!-- <p>Player 3: {{ players.2 }}</p> -->
-      <div class="player3">{{ players.2 }}
-        <form class="create-game-form" method="POST">
-          {% csrf_token %}
-          <div id="username" data-username="{{ request.user.username }}"></div>
-          <input type="hidden" id="opp_name" type="text" name="opp_name"
-            value="{{ players.3.profile.user.username }}" />
-          <button class="add_user btn btn-primary mt-2
-            {% if request.user.username != players.2.profile.user.username %}
-              disabled-link
-            {% endif %}" type="submit" name="player0_button_clicked">Iniciar Juego +</button>
-        </form>
-      </div>
-      {% if players.3 %}
-      <!-- <p>Player 4: {{ players.3 }}</p>
-        <p>{{players.3.tournement_game_id}}</p> -->
-      <div class="player4">{{ players.3 }}
-        <form class="create-game-form" method="POST">
-          {% csrf_token %}
-          <div id="username" data-username="{{ request.user.username }}"></div>
-          <a class="add_user btn btn-primary mt-2
-            {% if request.user.username != players.3.profile.user.username %}
-            disabled-link
-            {% endif %}" href="http://localhost:8000/game/new/{{ players.3.tournement_game_id }}/">Iniciar Juego +</a>
-        </form>
-      </div>
-      {% endif %}
-      {% endif %}
+    <div class="finals">
+        <div class="round round-3">
+            <div class="semifinalist1">
+                {% if winners.0 %} 
+                    {{ winners.0 }}
+                    <form class="create-game-form"
+                          data-game-id="{{ winners.0.tournement_game_id }}"
+                          data-username="{{ winners.0.profile.user.username }}">
+                        {% csrf_token %}
+                        <button class="add_user btn btn-primary mt-2"
+                            {% if request.user.username != winners.0.profile.user.username %}disabled{% endif %}
+                            type="button"
+                            onclick="initiateGame(this)">
+                            Iniciar Juego +
+                        </button>
+                    </form>
+                {% else %}
+                    Esperando semifinalista...
+                {% endif %}
+            </div>
+        </div>
     </div>
-  </div>
-
-  <!-- <p>wons1 = {{wons1}}</p>
-                              <p>player 1 won matches = {{players.0.matches_won}}</p>
-                              <p>wons2 = {{wons2}}</p>
-                              <p>player 2 won matches = {{players.1.matches_won}}</p>
-                              <p>wons3 = {{wons3}}</p>
-                              <p>player 3 won matches = {{players.2.matches_won}}</p>
-                              <p>wons4 = {{wons4}}</p>
-                              <p>player 4 won matches = {{players.3.matches_won}}</p>
-                              <p>winner 0.1 = {{ winners.0}}</p>
-                              <p>winner 0.2 = {{ winners.1}}</p>
-                              <p>winner 0.3 = {{ winners.2}}</p> -->
-
-  <div class="finals">
-    <div class="round round-3">
-      {% if winners.0 %}
-      <!-- <p>Player 1: {{ winners.0 }}</p> -->
-      <div class="semifinalist1">{{ winners.0 }}
-        <form class="create-game-form" method="POST">
-          {% csrf_token %}
-          <div id="username" data-username="{{ request.user.username }}"></div>
-          <input type="hidden" id="opp_name" type="text" name="opp_name"
-            value="{{ winners.1.profile.user.username }}" />
-          <button class="add_user btn btn-primary mt-2
-          {% if request.user.username != winners.0.profile.user.username %}
-          disabled-link
-          {% endif %}" type="submit" name="player0_button_clicked">Iniciar Juego +</button>
-        </form>
-      </div>
-      {%else%}
-      <div class="semifinalist1"> semifinalist - 1 
-        <form class="create-game-form" method="POST">
-          {% csrf_token %}
-          <div id="username" data-username="{{ request.user.username }}"></div>
-          <input type="hidden" id="opp_name" type="text" name="opp_name"
-            value="{{ winners.1.profile.user.username }}" />
-          <button class="add_user btn btn-primary mt-2
-          {% if 1 == 1 %}
-          disabled-link
-          {% endif %}" type="submit" name="player0_button_clicked">Iniciar Juego +</button>
-        </form>
-      </div>
-      {% endif %}
-      {% if winners.1 %}
-      <!-- <p>Player 2: {{ winners.1 }}</p> -->
-      <!-- <p>{{winners.1.tournement_game_id}}</p> -->
-      <div class="semifinalist2">{{ winners.1 }}
-        <form class="create-game-form" method="POST">
-          {% csrf_token %}
-          <div id="username" data-username="{{ request.user.username }}"></div>
-          <a class="add_user btn btn-primary mt-2
-          {% if request.user.username != winners.1.profile.user.username %}
-          disabled-link
-          {% endif %}" href="http://localhost:8000/game/new/{{ winners.1.tournement_game_id }}/">Iniciar Juego +</a>
-        </form>
-      </div>
-      {%else%}
-      <div class="semifinalist1"> waiting semifinalist ...
-        <form class="create-game-form" method="POST">
-          {% csrf_token %}
-          <div id="username" data-username="{{ request.user.username }}"></div>
-          <input type="hidden" id="opp_name" type="text" name="opp_name"
-            value="{{ winners.1.profile.user.username }}" />
-          <button class="add_user btn btn-primary mt-2
-          {% if 1 == 1 %}
-          disabled-link
-          {% endif %}" type="submit" name="player0_button_clicked">Iniciar Juego +</button>
-        </form>
-      </div>
-      {% endif %}
-    </div>
-  </div>
-  <div class="annouce-winner">
-    <div class="finalist">
-      {%if winners.2%}
-        {{ winners.2 }}
-      {%else%}
-       waiting finalist ...
-      {%endif%}
-      
-    </div>
-  </div>
 </div>
 
 <script>
-  // Variable para controlar el estado del botón
-  let buttonClicked = false;
+function initiateGame(element) {
+    const form = element.closest('form');
+    const gameId = form.dataset.gameId;
+    const username = form.dataset.username;
+    
+    const socket = new WebSocket(`ws://${window.location.host}/ws/tournament/`);
+    socket.onopen = () => {
+        socket.send(JSON.stringify({
+            action: 'start_game',
+            game_id: gameId,
+            username: username
+        }));
+    };
+}
 
-  function handleButtonClick() {
-    // Cambia el estado a true al hacer clic
-    buttonClicked = true;
+document.addEventListener('DOMContentLoaded', () => {
+    const tournamentSocket = new WebSocket(`ws://${window.location.host}/ws/tournament/`);
+    
+    tournamentSocket.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        if (data.type === 'bracket_update') {
+            fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' }})
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const newDoc = parser.parseFromString(html, 'text/html');
+                    const newBracket = newDoc.querySelector('.bracket-container');
+                    if (newBracket) {
+                        document.querySelector('.bracket-container').replaceWith(newBracket);
+                    }
+                });
+        }
+    };
 
-    // Aquí puedes agregar cualquier lógica adicional que necesites
-    console.log("El botón ha sido clickeado:", buttonClicked);
-
-    // Si deseas permitir el envío del formulario, retorna true
-    return true;
-  }
+    // Aplicar estilos iniciales
+    document.querySelectorAll('button[disabled]').forEach(btn => {
+        btn.classList.add('text-muted');
+    });
+});
 </script>
 {% else %}
-<!-- Si no hay 4 jugadores, muestra un mensaje o algo distinto -->
-<h2>refresh the page after 4 player joined.</h2>
+<h2>Esperando a que se unan 4 jugadores...</h2>
 {% endif %}
 {% endblock content %}
