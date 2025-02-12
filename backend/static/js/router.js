@@ -14,6 +14,8 @@ import { PongResult } from '/static/pong/js/pong_result.js';
 import { DisplayTournament } from '/static/pong/js/tournament_display.js';
 import { UsersApiHandler } from '/static/users/js/users_api.js';
 
+import {chat_overview} from '/static/chat/js/chat_overview.js';
+
 class Router {
 	constructor() {
 		this.routes = {};
@@ -163,6 +165,11 @@ router.addRoute('/quiz/', loadRoomList);
  * The main view of the pong app
  */
 router.addRoute('/pong/', PongOverview);
+
+/**
+ * The main view of the pong app
+ */
+router.addRoute('/chat/', chat_overview);
 
 /**
  * The Homepage

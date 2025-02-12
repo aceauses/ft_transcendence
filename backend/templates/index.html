@@ -49,6 +49,8 @@
 	<script type="module" src="{% static 'pong/js/pong_result.js' %}"></script>
 	<script type="module" src="{% static 'pong/js/tournament_display.js' %}"></script>
 
+	<script type="module" src="{% static 'chat/js/chat_overview.js' %}"></script>
+
 
 
 	<meta name="csrf-token" content="{{ csrf_token }}">
@@ -69,7 +71,7 @@
 				<div class="collapse navbar-collapse" id="navbarToggle">
 					<div class="navbar-nav mr-auto">
 						<a class="nav-item nav-link" href="/" id="home-link">{% trans "Home" %}</a>
-						<a class="nav-item nav-link" href="{% url 'chat' %}">{% trans "Chat" %}</a>
+						<a class="nav-item nav-link" href="/chat/">{% trans "Chat" %}</a>
 						<!-- @follow-up implement about page -->
 						<a class="nav-item nav-link" href="/quiz/" id="quiz-link">{% trans "Quiz" %}</a>
 						<a class="nav-item nav-link" href="/pong/">{% trans "Pong" %}</a>
